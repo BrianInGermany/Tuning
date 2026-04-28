@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Tuner - Switch Mode</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        h1 { color: #d4af37; margin-bottom: 5px; letter-spacing: 2px; }
+        .subtitle { color: #777; margin-bottom: 30px; font-size: 0.9rem; }
+        
+        .tuner-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            background: #1e1e1e; 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .string-control { display: flex; flex-direction: column; align-items: center; }
+
+        button { 
+            background: #2a2a2a; 
+            border: 2px solid #444; 
+            color: #aaa; 
+            padding: 25px; 
+            font-size: 1.1rem; 
+            font-weight: bold;
+            border-radius: 50%; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            width: 90px; 
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+
+        button:hover { border-color: #d4af37; color: #fff; }
+
+        /* Wenn der Ton aktiv ist */
+        button.active { 
+            background: #d4af37; 
+            color: #121212; 
+            border-color: #fff; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            transform: scale(1.05);
+        }
+
+        .label { margin-top: 8px; font-size: 0.75rem; color: #666; font-family: monospace; }
+        .footer { margin-top: 40px; font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <h1>GOLDEN TUNER</h1>
+    <div class="subtitle">A = 432Hz | Pure Intervals</div>
+
+    <div class="tuner-grid">
+        <div class="string-control">
+            <button id="btn-324" onclick="toggleTone(324.0, 'btn-324')">E</button>
+            <div class="label">324 Hz</div>
+        </div>
+        <div class="string-control">
+            <button id="btn-243" onclick="toggleTone(243.0, 'btn-243')">B</button>
+            <div class="label">243 Hz</div>
+        </div>
+        <div class="string-control">
+            <button id="btn-192" onclick="toggleTone(192.0, 'btn-192')">G</button>
+            <div class="label">192 Hz</div>
+        </div>
+        <div class="string-control">
+            <button id="btn-144" onclick="toggleTone(144.0, 'btn-144')">D</button>
+            <div class="label">144 Hz</div>
+        </div>
+        <div class="string-control">
+            <button id="btn-108" onclick="toggleTone(108.0, 'btn-108')">A</button>
+            <div class="label">108 Hz</div>
+        </div>
+        <div class="string-control">
+            <button id="btn-81" onclick="toggleTone(81.0, 'btn-81')">E</button>
+            <div class="label">81 Hz</div>
+        </div>
+    </div>
+
+    <div class="footer">Switch-Mode: Click to Start/Stop</div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const activeTones = {};
+
+        function toggleTone(freq, btnId) {
+            const btn = document.getElementById(btnId);
+
+            // AudioContext fortsetzen (wegen Browser-Autoplay-Regeln)
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (activeTones[freq]) {
+                // Ton ausschalten
+                const { osc, gain } = activeTones[freq];
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+                osc.stop(audioCtx.currentTime + 0.12);
+                delete activeTones[freq];
+                btn.classList.remove('active');
+            } else {
+                // Ton einschalten
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.1); // Sanftes Einblenden
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                activeTones[freq] = { osc, gain };
+                btn.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
