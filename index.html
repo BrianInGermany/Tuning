@@ -9,65 +9,69 @@
         h1 { color: #d4af37; margin-bottom: 5px; letter-spacing: 2px; }
         .subtitle { color: #777; margin-bottom: 30px; font-size: 0.9rem; }
         
+        /* Mode Switch Styling */
+        .mode-container { margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; border: 1px solid #d4af37; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 3px; background-color: #d4af37; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #1a1a1a; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* Gauge Styling */
+        .gauge-wrapper { 
+            width: 300px; height: 150px; position: relative; overflow: hidden; 
+            margin-bottom: 30px; display: none; /* Hidden by default */
+        }
+        .gauge-background {
+            width: 300px; height: 300px; border: 4px solid #d4af37;
+            border-radius: 50%; position: absolute; top: 0; box-sizing: border-box;
+            background: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #121212 70%);
+        }
+        .gauge-ticks {
+            position: absolute; width: 100%; height: 100%;
+            background: repeating-conic-gradient(from 270deg, transparent 0 1deg, #444 1deg 2deg);
+            mask: radial-gradient(farthest-side, transparent 90%, black 91%);
+            -webkit-mask: radial-gradient(farthest-side, transparent 90%, black 91%);
+        }
+        .needle {
+            position: absolute; width: 3px; height: 130px; background: #ff4444;
+            left: 50%; bottom: 0; transform-origin: bottom center;
+            transform: rotate(-90deg); transition: transform 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5); z-index: 10;
+        }
+        .center-nut {
+            position: absolute; width: 12px; height: 12px; background: #d4af37;
+            border-radius: 50%; bottom: -6px; left: calc(50% - 6px); z-index: 11;
+        }
+
         .tuner-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; 
-            background: #1e1e1e; 
-            padding: 25px; 
-            border-radius: 20px; 
-            border: 1px solid #333;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; 
+            background: #1e1e1e; padding: 25px; border-radius: 20px; 
+            border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 40px;
         }
 
         .string-control { display: flex; flex-direction: column; align-items: center; }
-
         button { 
-            background: #2a2a2a; 
-            border: 2px solid #444; 
-            color: #aaa; 
-            padding: 25px; 
-            font-size: 1.1rem; 
-            font-weight: bold;
-            border-radius: 50%; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            width: 90px; 
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
+            background: #2a2a2a; border: 2px solid #444; color: #aaa; 
+            padding: 25px; font-size: 1.1rem; font-weight: bold;
+            border-radius: 50%; cursor: pointer; transition: all 0.2s ease; 
+            width: 90px; height: 90px; display: flex; align-items: center; justify-content: center;
         }
-
         button:hover { border-color: #d4af37; color: #fff; }
         button.active { 
-            background: #d4af37; 
-            color: #121212; 
-            border-color: #fff; 
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
-            transform: scale(1.05);
+            background: #d4af37; color: #121212; border-color: #fff; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); transform: scale(1.05);
         }
 
         .label { margin-top: 8px; font-size: 0.75rem; color: #666; font-family: monospace; }
-
-        /* Schreibmaschinen-Textbereich */
         .description-box {
-            max-width: 600px;
-            background: #1a1a1a;
-            padding: 30px;
-            border-left: 3px solid #d4af37;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #c0c0c0;
-            margin-bottom: 50px;
-            white-space: pre-wrap; /* Bewahrt Zeilenumbrüche */
+            max-width: 600px; background: #1a1a1a; padding: 30px; border-left: 3px solid #d4af37;
+            font-family: 'Courier New', Courier, monospace; font-size: 0.95rem; line-height: 1.6;
+            color: #c0c0c0; margin-bottom: 50px; white-space: pre-wrap;
         }
-
         .footer { font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 1px; text-align: center; line-height: 1.8; }
-        .impressum { margin-top: 20px; border-top: 1px solid #333; pt-10; width: 100%; max-width: 300px; padding-top: 20px;}
+        .impressum { margin-top: 20px; border-top: 1px solid #333; width: 100%; max-width: 300px; padding-top: 20px;}
     </style>
 </head>
 <body>
@@ -75,86 +79,181 @@
     <h1>GOLDEN TUNER</h1>
     <div class="subtitle">A = 432Hz | Pure Intervals</div>
 
+    <div class="mode-container">
+        <span>TONE</span>
+        <label class="switch">
+            <input type="checkbox" id="mode-toggle" onchange="switchMode()">
+            <span class="slider"></span>
+        </label>
+        <span>MIC</span>
+    </div>
+
+    <div class="gauge-wrapper" id="gauge-ui">
+        <div class="gauge-background">
+            <div class="gauge-ticks"></div>
+        </div>
+        <div class="needle" id="needle"></div>
+        <div class="center-nut"></div>
+    </div>
+
     <div class="tuner-grid">
-        <div class="string-control">
-            <button id="btn-324" onclick="toggleTone(324.0, 'btn-324')">E</button>
-            <div class="label">324 Hz</div>
-        </div>
-        <div class="string-control">
-            <button id="btn-243" onclick="toggleTone(243.0, 'btn-243')">B</button>
-            <div class="label">243 Hz</div>
-        </div>
-        <div class="string-control">
-            <button id="btn-192" onclick="toggleTone(192.0, 'btn-192')">G</button>
-            <div class="label">192 Hz</div>
-        </div>
-        <div class="string-control">
-            <button id="btn-144" onclick="toggleTone(144.0, 'btn-144')">D</button>
-            <div class="label">144 Hz</div>
-        </div>
-        <div class="string-control">
-            <button id="btn-108" onclick="toggleTone(108.0, 'btn-108')">A</button>
-            <div class="label">108 Hz</div>
-        </div>
-        <div class="string-control">
-            <button id="btn-81" onclick="toggleTone(81.0, 'btn-81')">E</button>
-            <div class="label">81 Hz</div>
-        </div>
+        <div class="string-control"><button id="btn-324" onclick="handleInput(324.0, 'btn-324')">E</button><div class="label">324 Hz</div></div>
+        <div class="string-control"><button id="btn-243" onclick="handleInput(243.0, 'btn-243')">B</button><div class="label">243 Hz</div></div>
+        <div class="string-control"><button id="btn-192" onclick="handleInput(192.0, 'btn-192')">G</button><div class="label">192 Hz</div></div>
+        <div class="string-control"><button id="btn-144" onclick="handleInput(144.0, 'btn-144')">D</button><div class="label">144 Hz</div></div>
+        <div class="string-control"><button id="btn-108" onclick="handleInput(108.0, 'btn-108')">A</button><div class="label">108 Hz</div></div>
+        <div class="string-control"><button id="btn-81" onclick="handleInput(81.0, 'btn-81')">E</button><div class="label">81 Hz</div></div>
     </div>
 
     <div class="description-box">
-​JUSTIFICATION OF THE SYSTEM
+JUSTIFICATION OF THE SYSTEM
 ---------------------------
-​This tuning system breaks with the artificial uniformity of modern equal temperament. By utilizing frequency ratios that closely approximate the Golden Ratio (\phi) and the Pure Harmonic Series, it achieves maximum harmonic resonance.
-
-​Particularly in the C-Major form—and when using a capo on the 2nd, 3rd, or 4th frets—the overtones lock in mathematically. The result is a sustained, bell-like tone, devoid of the "nervous" beat frequencies found in standard tuning. This is a system for those who seek the mathematical order of nature within sound.
-
-Note: Tune using the natural harmonics at the 5th and 7th frets, for example.
+Pure tuning requires mathematical resonance. In MIC mode, select a string and play it clearly. The needle center represents the pure frequency. 
     </div>
 
     <div class="footer">
-        Switch-Mode: Click to Start/Stop
+        <span id="status-text">Tone Mode Active</span>
         <div class="impressum">
-            Impressum<br>
-            Brian Junker-Latocha<br>
-            Herm.-Steinhäuser-Str. 18<br>
-            63065 Offenbach
+            Impressum<br>Brian Junker-Latocha<br>Herm.-Steinhäuser-Str. 18<br>63065 Offenbach
         </div>
     </div>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const activeTones = {};
+        let activeTones = {};
+        let isMicMode = false;
+        let selectedFreq = null;
+        let animationId = null;
+        let stream = null;
+        let analyser = null;
+
+        function switchMode() {
+            isMicMode = document.getElementById('mode-toggle').checked;
+            document.getElementById('gauge-ui').style.display = isMicMode ? 'block' : 'none';
+            document.getElementById('status-text').innerText = isMicMode ? 'Mic Mode: Select String' : 'Tone Mode Active';
+            
+            // Stop everything when switching
+            Object.keys(activeTones).forEach(f => stopTone(f));
+            if (!isMicMode && animationId) cancelAnimationFrame(animationId);
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            selectedFreq = null;
+            updateNeedle(0);
+        }
+
+        function handleInput(freq, btnId) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (isMicMode) {
+                // Mic Mode Logic
+                document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                if (selectedFreq === freq) {
+                    selectedFreq = null;
+                    stopMic();
+                } else {
+                    selectedFreq = freq;
+                    document.getElementById(btnId).classList.add('active');
+                    startMic();
+                }
+            } else {
+                // Tone Mode Logic
+                toggleTone(freq, btnId);
+            }
+        }
 
         function toggleTone(freq, btnId) {
             const btn = document.getElementById(btnId);
-
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
             if (activeTones[freq]) {
-                const { osc, gain } = activeTones[freq];
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
-                osc.stop(audioCtx.currentTime + 0.12);
-                delete activeTones[freq];
+                stopTone(freq);
                 btn.classList.remove('active');
             } else {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
                 gain.gain.setValueAtTime(0, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.1);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start();
                 activeTones[freq] = { osc, gain };
                 btn.classList.add('active');
+            }
+        }
+
+        function stopTone(freq) {
+            if (activeTones[freq]) {
+                activeTones[freq].gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+                activeTones[freq].osc.stop(audioCtx.currentTime + 0.12);
+                delete activeTones[freq];
+            }
+        }
+
+        async function startMic() {
+            if (!stream) {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 2048;
+                audioCtx.createMediaStreamSource(stream).connect(analyser);
+            }
+            detectPitch();
+        }
+
+        function stopMic() {
+            if (animationId) cancelAnimationFrame(animationId);
+            updateNeedle(0);
+        }
+
+        function detectPitch() {
+            const buffer = new Float32Array(analyser.fftSize);
+            analyser.getFloatTimeDomainData(buffer);
+            
+            const pitch = autoCorrelate(buffer, audioCtx.sampleRate);
+            
+            if (pitch !== -1 && selectedFreq) {
+                // Calculate difference in Cents
+                // Cent = 1200 * log2(f2 / f1)
+                const diffCents = 1200 * Math.log2(pitch / selectedFreq);
+                updateNeedle(diffCents);
+            }
+            animationId = requestAnimationFrame(detectPitch);
+        }
+
+        // Classic Autocorrelation Algorithm
+        function autoCorrelate(buf, sampleRate) {
+            let SIZE = buf.length;
+            let rms = 0;
+            for (let i=0; i<SIZE; i++) { rms += buf[i]*buf[i]; }
+            if (Math.sqrt(rms/SIZE) < 0.01) return -1; // Too quiet
+
+            let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+            for (let i=0; i<SIZE/2; i++) if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+            for (let i=1; i<SIZE/2; i++) if (Math.abs(buf[SIZE-i]) < thres) { r2 = SIZE-i; break; }
+            buf = buf.slice(r1, r2);
+            SIZE = buf.length;
+
+            let c = new Float32Array(SIZE);
+            for (let i=0; i<SIZE; i++)
+                for (let j=0; j<SIZE-i; j++)
+                    c[i] = c[i] + buf[j]*buf[j+i];
+
+            let d=0; while (c[d]>c[d+1]) d++;
+            let maxval=-1, maxpos=-1;
+            for (let i=d; i<SIZE; i++) {
+                if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+            }
+            let T0 = maxpos;
+            return sampleRate/T0;
+        }
+
+        function updateNeedle(cents) {
+            // Map +/- 50 cents to -90 to +90 degrees
+            let deg = Math.max(-90, Math.min(90, cents * 1.8));
+            document.getElementById('needle').style.transform = `rotate(${deg}deg)`;
+            
+            // Color feedback
+            if (Math.abs(cents) < 2) {
+                document.getElementById('needle').style.background = '#d4af37'; // Pure Gold
+            } else {
+                document.getElementById('needle').style.background = '#ff4444'; // Red
             }
         }
     </script>
